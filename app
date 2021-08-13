@@ -8,25 +8,25 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 try {
-    require_once __DIR__.'/vendor/autoload.php';
+    require_once __DIR__ . '/vendor/autoload.php';
 
     $container = new Container();
     $dispatcher = new Dispatcher();
     $app = new Application($container, $dispatcher, '0.1');
     $app->setName('Calculator');
 
-    $commands = require_once __DIR__.'/commands.php';
+    $commands = require_once __DIR__ . '/commands.php';
     $commands = collect($commands)
         ->map(
             function ($command) use ($app) {
                 return $app->getLaravel()->make($command);
             }
         )
-        ->all()
-    ;
+        ->all();
 
     $app->addCommands($commands);
 
     $app->run(new ArgvInput(), new ConsoleOutput());
-} catch (Throwable $e) {
+} catch (\Throwable $e) {
+    error_log($e->getMessage());
 }

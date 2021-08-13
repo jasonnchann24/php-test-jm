@@ -2,10 +2,10 @@
 
 namespace Jakmall\Recruitment\Calculator\Commands;
 
-class AddCommand extends BaseCommand
+class PowerCommand extends BaseCommand
 {
-    protected $verb = 'add';
-    protected $operator = '+';
+    protected $verb = 'power';
+    protected $operator = '^';
 
     /**
      * @param int|float $number1
@@ -15,6 +15,6 @@ class AddCommand extends BaseCommand
      */
     protected function calculate($number1, $number2)
     {
-        return $number1 + $number2;
+        return pow($number1, $number2);
     }
 }
