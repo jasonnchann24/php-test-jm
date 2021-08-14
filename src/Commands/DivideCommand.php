@@ -3,25 +3,19 @@
 namespace Jakmall\Recruitment\Calculator\Commands;
 
 use Exception;
+use Jakmall\Recruitment\Calculator\Commands\Calculations\DivideCalculation;
 use Jakmall\Recruitment\Calculator\Utils\Constant;
 
 class DivideCommand extends BaseCommand
 {
-    protected $verb = 'divide';
+    protected $verb = Constant::DIVIDE;
     protected $operator = '/';
+    protected $calculation;
 
-    /**
-     * @param int|float $number1
-     * @param int|float $number2
-     *
-     * @return int|float
-     */
-    protected function calculate($number1, $number2)
+    public function __construct(DivideCalculation $calculation)
     {
-        if ($number2 == 0) {
-            throw new Exception(Constant::ZERO_DIVISION_MESSAGE);
-        }
+        $this->calculation = $calculation;
 
-        return $number1 / $number2;
+        parent::__construct();
     }
 }

@@ -2,19 +2,19 @@
 
 namespace Jakmall\Recruitment\Calculator\Commands;
 
+use Jakmall\Recruitment\Calculator\Commands\Calculations\PowerCalculation;
+use Jakmall\Recruitment\Calculator\Utils\Constant;
+
 class PowerCommand extends BaseCommand
 {
-    protected $verb = 'power';
+    protected $verb = Constant::POWER;
     protected $operator = '^';
+    protected $calculation;
 
-    /**
-     * @param int|float $number1
-     * @param int|float $number2
-     *
-     * @return int|float
-     */
-    protected function calculate($number1, $number2)
+    public function __construct(PowerCalculation $calculation)
     {
-        return pow($number1, $number2);
+        $this->calculation = $calculation;
+
+        parent::__construct();
     }
 }

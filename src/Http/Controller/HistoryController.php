@@ -2,24 +2,52 @@
 
 namespace Jakmall\Recruitment\Calculator\Http\Controller;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Jakmall\Recruitment\Calculator\History\CommandHistoryManager;
+use Jakmall\Recruitment\Calculator\Utils\Constant;
 
 class HistoryController
 {
-    public function index()
+    protected $history;
+
+    public function __construct(CommandHistoryManager $history)
+    {
+        $this->history = $history;
+    }
+
+    public function index(Request $request)
     {
         // todo: modify codes to get history
-        dd('create history logic here');
+        $driver = $request->get('driver') ?? Constant::DRIVER_COMPOSITE;
+        $data = $this->history->findAll($driver);
+        $res = $this->toJson($data);
+
+        return JsonResponse::create($res);
     }
 
-    public function show()
+    public function show($id, Request $request)
     {
-        dd('create show history by id here');
+        $driver = $request->get('driver') ?? Constant::DRIVER_COMPOSITE;
+        $data = $this->history->find($id, $driver);
+        $res = $this->toJson($data);
+        return JsonResponse::create($res);
     }
 
-    public function remove()
+    public function remove($id)
     {
         // todo: modify codes to remove history
-        dd('create remove history logic here');
+        $this->history->clear($id);
+        return JsonResponse::create([], 204);
+    }
+
+    private function toJson(array $data)
+    {
+        $res = [];
+        foreach ($data as $key => $d) {
+            array_push($res, json_decode($d));
+        }
+
+        return $res;
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use Illuminate\Container\Container;
 use Illuminate\Http\Request;
 use Jakmall\Recruitment\Calculator\Http\Foundation\RouteServiceProvider;
 
-$appConfig = require_once __DIR__.'/../config/app.php';
+$appConfig = require_once __DIR__ . '/../config/app.php';
 $providers = $appConfig['providers'];
 
 $container = new Container();
@@ -27,8 +27,7 @@ $router
             $router->delete('/{id}', 'HistoryController@remove');
             $router->post('/{action}', 'CalculatorController@calculate');
         }
-    )
-;
+    );
 
 $request = Request::capture();
 $request->server->set('SCRIPT_FILENAME', '/index.php');

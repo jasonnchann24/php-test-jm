@@ -4,11 +4,14 @@ namespace Jakmall\Recruitment\Calculator\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
+use Jakmall\Recruitment\Calculator\Commands\Traits\CommandsTrait;
 use Jakmall\Recruitment\Calculator\History\Infrastructure\CommandHistoryManagerInterface;
 use Jakmall\Recruitment\Calculator\Utils\Constant;
 
 class BaseCommand extends Command
 {
+    use CommandsTrait;
+
     /**
      * @var string
      */
@@ -30,6 +33,7 @@ class BaseCommand extends Command
     protected $description;
 
     protected $history;
+    protected $calculation;
 
 
     public function __construct()
@@ -42,7 +46,7 @@ class BaseCommand extends Command
 
     public function getDescription()
     {
-        $commandVerb = $this->getCommandVerb();
+        $commandVerb = $this->verb;
         return sprintf('%s all given Numbers', ucfirst($commandVerb));
     }
 
@@ -50,14 +54,9 @@ class BaseCommand extends Command
     {
         return sprintf(
             '%s {numbers* : The numbers to be %s} {--driver=composite : Available drivers [file|latest|composite]}',
-            $this->getCommandVerb(),
+            $this->verb,
             $this->getCommandPassiveVerb()
         );
-    }
-
-    protected function getCommandVerb(): string
-    {
-        return $this->verb;
     }
 
     protected function getCommandPassiveVerb(): string
@@ -81,15 +80,11 @@ class BaseCommand extends Command
         $this->history = $historyManager;
 
         $numbers = $this->getInput();
-        $description = $this->generateCalculationDescription($numbers);
-        $result = $this->calculateAll($numbers);
+        $description = $this->generateCalculationDescription($numbers, $this->operator);
+        $result = $this->calculation->calculateAll($numbers);
+        $driver = $this->option('driver') ?? 'composite';
 
-        $this->history->log([
-            'verb' => $this->getCommandVerb(),
-            'description' => $description,
-            'result' => $result,
-            'driver' => $this->option('driver')
-        ]);
+        $this->calculation->saveToLog($this->verb, $description, $result, $driver, $historyManager);
 
         $this->comment(sprintf('%s = %s', $description, $result));
     }
@@ -97,38 +92,5 @@ class BaseCommand extends Command
     protected function getInput($argName = 'numbers')
     {
         return $this->argument($argName) ?? [];
-    }
-
-    protected function generateCalculationDescription(array $numbers): string
-    {
-        $operator = $this->getOperator();
-        $glue = sprintf(' %s ', $operator);
-
-        return implode($glue, $numbers);
-    }
-
-    protected function getOperator(): string
-    {
-        return $this->operator;
-    }
-
-    /**
-     * @param array $numbers
-     *
-     * @return float|int
-     */
-    protected function calculateAll(array $numbers)
-    {
-        if (($this->operator === '^' || $this->verb === 'power') && count($numbers) > 2) {
-            throw new Exception(Constant::POWER_EXCEPTION_MESSAGE);
-        }
-
-        $number = array_pop($numbers);
-
-        if (count($numbers) <= 0) {
-            return $number;
-        }
-
-        return $this->calculate($this->calculateAll($numbers), $number);
     }
 }

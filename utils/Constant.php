@@ -9,4 +9,9 @@ class Constant
     const DRIVER_COMPOSITE = 'composite';
     const DRIVER_FILE = 'file';
     const DRIVER_LATEST = 'latest';
+    const ADD = 'add';
+    const DIVIDE = 'divide';
+    const MULTIPLY = 'multiply';
+    const POWER = 'power';
+    const SUBTRACT = 'subtract';
 }

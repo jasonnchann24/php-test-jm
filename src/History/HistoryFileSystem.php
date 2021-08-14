@@ -85,7 +85,7 @@ class HistoryFileSystem implements HistoryFileSystemInterface
         return true;
     }
 
-    public function selectDriver(string $driverName)
+    public function selectDriver(string $driverName = 'composite')
     {
         if (!$this->drivers[$driverName]) {
             throw new Exception("Driver not supported");

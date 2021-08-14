@@ -19,7 +19,7 @@ class HistoryClearCommand extends BaseCommand
     {
         return sprintf(
             '%s {id? : The ID of a data} {--driver=composite : Available drivers [file|latest|composite]}',
-            $this->getCommandVerb(),
+            $this->verb,
         );
     }
 

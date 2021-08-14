@@ -62,7 +62,7 @@ class CommandHistoryManager implements CommandHistoryManagerInterface
      *
      * @return bool Returns true when data with $id is cleared successfully, false otherwise.
      */
-    public function clear($id, $driver): bool
+    public function clear($id, $driver = 'composite'): bool
     {
         try {
             $res = $this->fs->delete($id, $driver);

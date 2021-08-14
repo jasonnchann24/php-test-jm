@@ -2,19 +2,19 @@
 
 namespace Jakmall\Recruitment\Calculator\Commands;
 
+use Jakmall\Recruitment\Calculator\Commands\Calculations\MultiplyCalculation;
+use Jakmall\Recruitment\Calculator\Utils\Constant;
+
 class MultiplyCommand extends BaseCommand
 {
-    protected $verb = 'multiply';
+    protected $verb = Constant::MULTIPLY;
     protected $operator = '*';
+    protected $calculation;
 
-    /**
-     * @param int|float $number1
-     * @param int|float $number2
-     *
-     * @return int|float
-     */
-    protected function calculate($number1, $number2)
+    public function __construct(MultiplyCalculation $calculation)
     {
-        return $number1 * $number2;
+        $this->calculation = $calculation;
+
+        parent::__construct();
     }
 }
