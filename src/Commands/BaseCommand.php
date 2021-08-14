@@ -4,6 +4,7 @@ namespace Jakmall\Recruitment\Calculator\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
+use Jakmall\Recruitment\Calculator\History\Infrastructure\CommandHistoryManagerInterface;
 use Jakmall\Recruitment\Calculator\Utils\Constant;
 
 class BaseCommand extends Command
@@ -28,12 +29,17 @@ class BaseCommand extends Command
      */
     protected $description;
 
-    public function __construct()
+    protected $history;
+
+
+    public function __construct(CommandHistoryManagerInterface $historyManager)
     {
+        $this->history = $historyManager;
+
         $commandVerb = $this->getCommandVerb();
 
         $this->signature = sprintf(
-            '%s {numbers* : The numbers to be %s}',
+            '%s {numbers* : The numbers to be %s} {--driver=composite : Available drivers [file|latest|composite]}',
             $commandVerb,
             $this->getCommandPassiveVerb()
         );
@@ -68,6 +74,13 @@ class BaseCommand extends Command
         $numbers = $this->getInput();
         $description = $this->generateCalculationDescription($numbers);
         $result = $this->calculateAll($numbers);
+
+        $this->history->log([
+            'verb' => $this->getCommandVerb(),
+            'description' => $description,
+            'result' => $result,
+            'driver' => $this->option('driver')
+        ]);
 
         $this->comment(sprintf('%s = %s', $description, $result));
     }

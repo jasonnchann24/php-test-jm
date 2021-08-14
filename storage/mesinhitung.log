@@ -1,0 +1,20 @@
+{"id":1,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":2,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":3,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":4,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":5,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":6,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":7,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":8,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":9,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":10,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":11,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":12,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":13,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":14,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":15,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":16,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":17,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":18,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":19,"command":"Power","operation":"1 ^ 2","result":1}
+{"id":20,"command":"Add","operation":"1 + 2 + 3","result":6}

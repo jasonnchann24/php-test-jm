@@ -14,7 +14,7 @@ try {
     $dispatcher = new Dispatcher();
     $app = new Application($container, $dispatcher, '0.1');
     $app->setName('Calculator');
-    $appConfig = require_once __DIR__.'/config/app.php';
+    $appConfig = require_once __DIR__ . '/config/app.php';
     $providers = $appConfig['providers'];
 
     foreach ($providers as $provider) {
