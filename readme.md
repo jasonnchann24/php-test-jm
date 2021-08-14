@@ -11,3 +11,8 @@
 ```
 ./calculator
 ```
+
+## Run Test
+```
+./runtests
+```

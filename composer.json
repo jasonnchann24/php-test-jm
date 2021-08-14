@@ -1,7 +1,9 @@
 {
     "name": "jakmall/recruitment-calculator",
     "description": "Jakmall Software Engineer Technical Test : Jakmall Calculator.",
-    "keywords": ["jakmall"],
+    "keywords": [
+        "jakmall"
+    ],
     "license": "proprietary",
     "type": "project",
     "require": {
@@ -9,13 +11,18 @@
         "illuminate/console": "5.8.*",
         "illuminate/container": "5.8.*",
         "illuminate/events": "5.8.*",
-        "illuminate/http": "5.8.*",
-        "illuminate/routing": "5.8.*",
-        "illuminate/support": "5.8.*"
+        "illuminate/support": "5.8.*",
+        "pear/console_table": "^1.3"
     },
     "autoload": {
         "psr-4": {
             "Jakmall\\Recruitment\\Calculator\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jakmall\\Recruitment\\Calculator\\Tests\\": "tests/",
+            "Jakmall\\Recruitment\\Calculator\\Utils\\": "utils/"
         }
     },
     "config": {
@@ -24,5 +31,8 @@
         "optimize-autoloader": true
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
 }
