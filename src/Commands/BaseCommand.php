@@ -32,20 +32,27 @@ class BaseCommand extends Command
     protected $history;
 
 
-    public function __construct(CommandHistoryManagerInterface $historyManager)
+    public function __construct()
     {
-        $this->history = $historyManager;
-
-        $commandVerb = $this->getCommandVerb();
-
-        $this->signature = sprintf(
-            '%s {numbers* : The numbers to be %s} {--driver=composite : Available drivers [file|latest|composite]}',
-            $commandVerb,
-            $this->getCommandPassiveVerb()
-        );
-        $this->description = sprintf('%s all given Numbers', ucfirst($commandVerb));
+        $this->signature = $this->getSignature();
+        $this->description = $this->getDescription();
 
         parent::__construct();
+    }
+
+    public function getDescription()
+    {
+        $commandVerb = $this->getCommandVerb();
+        return sprintf('%s all given Numbers', ucfirst($commandVerb));
+    }
+
+    public function getSignature()
+    {
+        return sprintf(
+            '%s {numbers* : The numbers to be %s} {--driver=composite : Available drivers [file|latest|composite]}',
+            $this->getCommandVerb(),
+            $this->getCommandPassiveVerb()
+        );
     }
 
     protected function getCommandVerb(): string
@@ -69,8 +76,10 @@ class BaseCommand extends Command
         return $this->verb . $postfix;
     }
 
-    public function handle(): void
+    public function handle(CommandHistoryManagerInterface $historyManager): void
     {
+        $this->history = $historyManager;
+
         $numbers = $this->getInput();
         $description = $this->generateCalculationDescription($numbers);
         $result = $this->calculateAll($numbers);
@@ -85,9 +94,9 @@ class BaseCommand extends Command
         $this->comment(sprintf('%s = %s', $description, $result));
     }
 
-    protected function getInput(): array
+    protected function getInput($argName = 'numbers'): array
     {
-        return $this->argument('numbers');
+        return $this->argument($argName) ?? [];
     }
 
     protected function generateCalculationDescription(array $numbers): string

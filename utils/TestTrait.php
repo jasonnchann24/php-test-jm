@@ -19,7 +19,11 @@ trait TestTrait
         $container = new Container();
         $dispatcher = new Dispatcher();
         $app = new Application($container, $dispatcher, '0.1');
-
+        $appConfig = require __DIR__ . '/../config/app.php';
+        $providers = $appConfig['providers'];
+        foreach ($providers as $provider) {
+            $container->make($provider)->register($container);
+        }
         $testedCommand = $app->getLaravel()->make($this->classToTest);
         $app->addCommands([$testedCommand]);
 

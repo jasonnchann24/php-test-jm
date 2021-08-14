@@ -14,5 +14,16 @@ return [
         'composite' => [
             'path' => false
         ]
+    ],
+    'test_drivers' => [
+        'file' => [
+            'path' => 'storage/testmesinhitung.log'
+        ],
+        'latest' => [
+            'path' => 'storage/testlatest.log'
+        ],
+        'composite' => [
+            'path' => false
+        ]
     ]
 ];

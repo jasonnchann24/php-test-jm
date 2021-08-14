@@ -10,7 +10,7 @@ interface CommandHistoryManagerInterface
      *
      * @return array returns an array of commands in storage
      */
-    public function findAll(): array;
+    public function findAll(string $driver): array;
 
     /**
      * Find a command by id.
@@ -44,5 +44,5 @@ interface CommandHistoryManagerInterface
      *
      * @return bool Returns true if all data is cleared successfully, false otherwise.
      */
-    public function clearAll():bool;
+    public function clearAll(): bool;
 }

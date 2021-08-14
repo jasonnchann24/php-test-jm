@@ -14,13 +14,25 @@ class HistoryFileSystem implements HistoryFileSystemInterface
     public function __construct()
     {
         $appConfig = require __DIR__ . '/../../config/app.php';
-        $this->drivers = $appConfig['available_drivers'];
+        $env =  getenv('APP_ENV');
+        $this->drivers = $env == 'testing'
+            ? $appConfig['test_drivers']
+            : $appConfig['available_drivers'];
         $this->selectedDriver = Constant::DRIVER_COMPOSITE;
     }
 
-    public function all()
+    public function all(string $driver): array
     {
-        //
+        $this->selectDriver($driver);
+        if ($this->selectedDriver == Constant::DRIVER_COMPOSITE) {
+            return $this->unMarshal(Constant::DRIVER_FILE);
+        }
+
+        if ($this->selectedDriver == Constant::DRIVER_LATEST) {
+            return array_reverse($this->unMarshal($this->selectedDriver));
+        }
+
+        return $this->unMarshal($this->selectedDriver);
     }
 
     public function create(array $data)
@@ -64,6 +76,22 @@ class HistoryFileSystem implements HistoryFileSystemInterface
         ];
 
         return json_encode($encode);
+    }
+
+    private function unMarshal(string $driver): array
+    {
+        $res = [];
+        $path = $this->drivers[$driver]['path'];
+        $content = @file_get_contents($path);
+        if ($content) {
+            $array = explode("\n", $content);
+
+            // remove trailing break
+            array_pop($array);
+            $res = $array;
+        }
+
+        return $res;
     }
 
     private function getLatestId()

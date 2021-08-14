@@ -18,9 +18,9 @@ class CommandHistoryManager implements CommandHistoryManagerInterface
      *
      * @return array returns an array of commands in storage
      */
-    public function findAll(): array
+    public function findAll($driver): array
     {
-        return [];
+        return $this->fs->all($driver);
     }
 
     /**
