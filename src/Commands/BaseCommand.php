@@ -94,7 +94,7 @@ class BaseCommand extends Command
         $this->comment(sprintf('%s = %s', $description, $result));
     }
 
-    protected function getInput($argName = 'numbers'): array
+    protected function getInput($argName = 'numbers')
     {
         return $this->argument($argName) ?? [];
     }

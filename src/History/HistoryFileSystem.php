@@ -42,18 +42,47 @@ class HistoryFileSystem implements HistoryFileSystemInterface
         $this->putToLatest($newContent);
     }
 
-    public function find()
+    public function find(string $id, string $driver)
     {
-        //
+        $this->selectDriver($driver);
+        $res = [];
+        if ($this->selectedDriver == Constant::DRIVER_COMPOSITE) {
+            $res = $this->getById($id, Constant::DRIVER_LATEST);
+            if (count($res) > 0) {
+                return $res;
+            }
+            $res = $this->getById($id, Constant::DRIVER_FILE);
+            return $res;
+        }
+
+        $res = $this->getById($id, $this->selectedDriver);
+        return $res;
     }
 
-    public function delete()
+    public function delete(string $id, string $driver)
     {
-        //
+        $this->selectDriver($driver);
+        $res = [];
+        $bool = false;
+        if ($this->selectedDriver == Constant::DRIVER_COMPOSITE) {
+
+            $latest = $this->deleteById($id, Constant::DRIVER_LATEST);
+            $file = $this->deleteById($id, Constant::DRIVER_FILE);
+
+            $bool = $latest || $file;
+            return $bool;
+        }
+
+        $bool = $this->deleteById($id, $this->selectedDriver);
+        return $bool;
     }
-    public function truncate()
+
+    public function truncate(): bool
     {
-        //
+        $this->clear(Constant::DRIVER_FILE);
+        $this->clear(Constant::DRIVER_LATEST);
+
+        return true;
     }
 
     public function selectDriver(string $driverName)
@@ -63,6 +92,60 @@ class HistoryFileSystem implements HistoryFileSystemInterface
         }
 
         $this->selectedDriver = $driverName;
+    }
+
+    public function bumpData(string $id)
+    {
+        $data = $this->unMarshal(Constant::DRIVER_LATEST);
+        foreach ($data as $key => $x) {
+            $d = json_decode($x);
+            if ($d->id == $id) {
+                $pushData = $data[$key];
+                array_splice($data, $key, 1);
+                array_push($data, $pushData);
+                $joined = join("\n", $data);
+                $this->clear(Constant::DRIVER_LATEST);
+                file_put_contents($this->drivers['latest']['path'], $joined . "\n", FILE_APPEND);
+            }
+        }
+    }
+
+    private function deleteById($id, $driver)
+    {
+        $data = $this->unMarshal($driver);
+        foreach ($data as $key => $x) {
+            $d = json_decode($x);
+            if ($d->id == $id) {
+                array_splice($data, $key, 1);
+                $joined = join("\n", $data);
+                $this->clear($driver);
+                file_put_contents($this->drivers[$driver]['path'], $joined . "\n", FILE_APPEND);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function clear($driver)
+    {
+        file_put_contents($this->drivers[$driver]['path'], "");
+    }
+
+    private function getById($id, $driver)
+    {
+        $data = $this->unMarshal($driver);
+        foreach ($data as $key => $x) {
+            $d = json_decode($x);
+            if ($d->id == $id) {
+                if ($driver == Constant::DRIVER_LATEST) {
+                    $this->bumpData($id);
+                }
+                return (array)$data[$key];
+            }
+        }
+
+        return [];
     }
 
     private function marshal(array $data): string
@@ -96,12 +179,10 @@ class HistoryFileSystem implements HistoryFileSystemInterface
 
     private function getLatestId()
     {
-        $file = @file_get_contents($this->drivers['file']['path']);
+        $data = $this->unMarshal(Constant::DRIVER_FILE);
         $latestId = 0;
-        if ($file) {
-            $latestData = explode("\n", $file);
-
-            $latestData = $latestData[count($latestData) - 2];
+        if (count($data) > 0) {
+            $latestData = $data[count($data) - 1];
             $latestId = (json_decode($latestData))->id;
         }
 
@@ -125,7 +206,7 @@ class HistoryFileSystem implements HistoryFileSystemInterface
                 array_shift($latestData);
                 array_push($latestData, $newContent);
                 $joined = join("\n", $latestData);
-                file_put_contents($latestPath, "");
+                $this->clear(Constant::DRIVER_LATEST);
                 file_put_contents($latestPath, $joined . "\n", FILE_APPEND);
                 return;
             }

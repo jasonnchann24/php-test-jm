@@ -33,7 +33,7 @@ class HistoryListCommand extends BaseCommand
         $driver = $this->option('driver') ?? Constant::DRIVER_COMPOSITE;
 
         if ($id) {
-            $res = $this->history->find($id);
+            $res = $this->history->find($id, $driver);
         } else {
             $res = $this->history->findAll($driver);
         }

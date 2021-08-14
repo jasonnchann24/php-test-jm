@@ -6,7 +6,8 @@ interface HistoryFileSystemInterface
 {
     public function all(string $driver);
     public function create(array $data);
-    // public function find();
-    // public function delete();
-    // public function truncate();
+    public function find(string $id, string $driver);
+    public function bumpData(string $id);
+    public function delete(string $id, string $driver);
+    public function truncate(): bool;
 }

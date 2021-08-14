@@ -27,12 +27,13 @@ class CommandHistoryManager implements CommandHistoryManagerInterface
      * Find a command by id.
      *
      * @param string|int $id
+     * @param string $driver
      *
      * @return null|mixed returns null when id not found.
      */
-    public function find($id)
+    public function find($id, $driver)
     {
-        //
+        return $this->fs->find($id, $driver);
     }
 
     /**
@@ -61,9 +62,16 @@ class CommandHistoryManager implements CommandHistoryManagerInterface
      *
      * @return bool Returns true when data with $id is cleared successfully, false otherwise.
      */
-    public function clear($id): bool
+    public function clear($id, $driver): bool
     {
-        return false;
+        try {
+            $res = $this->fs->delete($id, $driver);
+        } catch (Throwable $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+
+        return $res;
     }
 
     /**
@@ -73,6 +81,6 @@ class CommandHistoryManager implements CommandHistoryManagerInterface
      */
     public function clearAll(): bool
     {
-        return false;
+        return $this->fs->truncate();
     }
 }
